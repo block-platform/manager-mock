@@ -157,7 +157,7 @@ def create_policy():
 
     print(f"Policy db: {policies}")
 
-    policies.append(
+    test_policies.append(
         {
             "id": "5",
             "name": "Test Addition",
