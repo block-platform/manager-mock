@@ -168,6 +168,20 @@ def create_policy():
 
     return jsonify()
 
+@app.route("/ipfs-hash/<device_id>", methods=["PUT"])
+def get_ipfs_hash(device_id):
+    if device_id == "":
+        return jsonify({"error": "No device id provided"}), 400
+
+    print(f"Getting ipfs hash for device id: {device_id} with body {request.json}")
+
+    return jsonify({"ipfsHash": "QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX"})
+
+
+@app.route("/ipfs-hash", methods=["GET"])
+def get_ipfs_hashs():
+    return jsonify({"ipfsHash": "QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX"})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
