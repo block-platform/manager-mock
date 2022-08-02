@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
@@ -6,6 +7,23 @@ CORS(app)
 
 db = {}
 client_db = {}
+policies = defaultdict(list)
+devices = []
+
+test_policies = [
+    {
+        "id": "0",
+        "name": "Temperature Sensor",
+        "authorized_devices": ["CO2 Sensor", "Air Quality Sensor"],
+        "authorized_users": ["ron@test.com", "banana@gmail.com"],
+    },
+    {
+        "id": "1",
+        "name": "Humidity Sensor",
+        "authorized_devices": ["Air Quality Sensor"],
+        "authorized_users": ["test@gmail.com"],
+    },
+]
 
 
 # @app.after_request
@@ -58,6 +76,8 @@ def create_client():
 
     client_db[request_data["email"]] = request_data["password"]
 
+    print(f"Client db: {client_db}")
+
     return jsonify({"token": "fake-token-for-client"})
 
 
@@ -75,7 +95,7 @@ def signin_user():
         return jsonify({"error": "Invalid credentials"}), 401
 
 
-@app.route("/devices")
+@app.route("/devices", methods=["GET"])
 @cross_origin(origin="*")
 def get_devices():
     res = jsonify(
@@ -106,27 +126,47 @@ def get_devices():
     return res
 
 
-@app.route("/policies")
+@app.route("/devices", methods=["POST"])
+def register_device():
+    request_data = request.json
+    print(f"Registering a new device with request data: {request_data}")
+
+    devices.append(request_data)
+
+    return jsonify()
+
+
+@app.route("/policies", methods=["GET"])
 @cross_origin(origin="*")
 def get_policies():
     res = jsonify(
         {
-            "policies": [
-                {
-                    "id": "0",
-                    "name": "Temperature Sensor",
-                    "authorized_devices": ["CO2 Sensor", "Air Quality Sensor"],
-                },
-                {
-                    "id": "1",
-                    "name": "Humidity Sensor",
-                    "authorized_devices": ["Air Quality Sensor"],
-                },
-            ]
+            "policies": test_policies,
         }
     )
     res.headers.add("Access-Control-Allow-Origin", "*")
     return res
+
+
+@app.route("/policies", methods=["POST"])
+def create_policy():
+    request_data = request.json
+    print(f"Creating a new policy with request data: {request_data}")
+    policies[request_data["device_id"]].append(request_data["accessing_device_id"])
+    policies[request_data["device_id"]].append(request_data["accessing_user_id"])
+
+    print(f"Policy db: {policies}")
+
+    policies.append(
+        {
+            "id": "5",
+            "name": "Test Addition",
+            "authorized_devices": ["Test Sensor"],
+            "authorized_users": ["test@test.com"],
+        },
+    )
+
+    return jsonify()
 
 
 if __name__ == "__main__":
