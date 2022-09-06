@@ -183,5 +183,34 @@ def get_ipfs_hashs():
     return jsonify({"ipfsHash": "QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX"})
 
 
+# Routes for IoT device
+@app.route("/iot/ipfs-hash", method=["PUT"])
+def update_ipfs_hash():
+    print(f"/iot/ipfs-hash called with body {request.json}")
+    request_data = request.json
+    if "device-id" not in request_data:
+        return jsonify({"error": "No device id provided"}), 400
+
+    if "ipfs-hash" not in request_data:
+        return jsonify({"error": "No ipfs hash provided"}), 400
+
+    if "device-key" not in request_data:
+        return jsonify({"error": "No device key provided"}), 400
+
+    return jsonify(), 200
+
+@app.route("/iot/data-access", method=["PUT"])
+def data_access():
+    print(f"/iot/data-access called with body {request.json}")
+    request_data = request.json
+    if "device-id" not in request_data:
+        return jsonify({"error": "No device id provided"}), 400
+
+    if "device-key" not in request_data:
+        return jsonify({"error": "No device key provided"}), 400
+
+    return jsonify({"ipfs-hash": "<IPFS HASH>"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
