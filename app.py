@@ -184,7 +184,7 @@ def get_ipfs_hashs():
 
 
 # Routes for IoT device
-@app.route("/iot/ipfs-hash", method=["PUT"])
+@app.route("/iot/ipfs-hash", methods=["PUT"])
 def update_ipfs_hash():
     print(f"/iot/ipfs-hash called with body {request.json}")
     request_data = request.json
@@ -199,7 +199,7 @@ def update_ipfs_hash():
 
     return jsonify(), 200
 
-@app.route("/iot/data-access", method=["PUT"])
+@app.route("/iot/data-access", methods=["PUT"])
 def data_access():
     print(f"/iot/data-access called with body {request.json}")
     request_data = request.json
