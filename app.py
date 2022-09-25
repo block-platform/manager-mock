@@ -138,7 +138,7 @@ def register_device():
 
     devices.append(request_data)
 
-    return jsonify()
+    return jsonify({"deviceID": randint(0, 100), "apiKey": "fake-api-key"})
 
 
 @app.route("/policies", methods=["GET"])
@@ -195,13 +195,13 @@ def get_ipfs_hashs():
 def update_ipfs_hash():
     print(f"/iot/ipfs-hash called with body {request.json}")
     request_data = request.json
-    if "device-id" not in request_data:
+    if "device_id" not in request_data:
         return jsonify({"error": "No device id provided"}), 400
 
-    if "ipfs-hash" not in request_data:
+    if "ipfs_hash" not in request_data:
         return jsonify({"error": "No ipfs hash provided"}), 400
 
-    if "device-key" not in request_data:
+    if "device_key" not in request_data:
         return jsonify({"error": "No device key provided"}), 400
 
     return jsonify(), 200
