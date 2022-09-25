@@ -1,4 +1,5 @@
 from collections import defaultdict
+from random import randint
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
@@ -66,7 +67,7 @@ def create_user():
 
     db[request_data["email"]] = request_data["password"]
 
-    return jsonify({"token": "fake-token"})
+    return jsonify()
 
 
 @app.route("/clients", methods=["POST"])
@@ -90,7 +91,7 @@ def signin_user():
         request_data["email"] in db
         and db[request_data["email"]] == request_data["password"]
     ):
-        return jsonify({"token": "fake-token"})
+        return jsonify({"token": "faker-token"})
     else:
         return jsonify({"error": "Invalid credentials"}), 401
 
@@ -98,22 +99,26 @@ def signin_user():
 @app.route("/devices", methods=["GET"])
 @cross_origin(origin="*")
 def get_devices():
+    print(f"Get devices Request headers are {request.headers}")
     res = jsonify(
         {
             "devices": [
                 {
+                    "id": "0",
                     "name": "CO2 Sensor",
                     "region": "US West",
                     "ipfs": "lkasdjf9325kadjsfkj",
                     "updated_at": "2020-01-01",
                 },
                 {
+                    "id": "1",
                     "name": "Air Quality Sensor",
                     "region": "US East",
                     "ipfs": "dsafadsf4tadsfads42",
                     "updated_at": "2020-04-19",
                 },
                 {
+                    "id": "2",
                     "name": "Temperature Sensor",
                     "region": "US Central",
                     "ipfs": "kadsjfki45889tioeqw",
@@ -139,6 +144,7 @@ def register_device():
 @app.route("/policies", methods=["GET"])
 @cross_origin(origin="*")
 def get_policies():
+    print(f"Get policies Request headers are {request.headers}")
     res = jsonify(
         {
             "policies": test_policies,
@@ -150,6 +156,7 @@ def get_policies():
 
 @app.route("/policies", methods=["POST"])
 def create_policy():
+    print(f"Request headers are {request.headers}")
     request_data = request.json
     print(f"Creating a new policy with request data: {request_data}")
     policies[request_data["device_id"]].append(request_data["accessing_device_id"])
@@ -159,7 +166,7 @@ def create_policy():
 
     test_policies.append(
         {
-            "id": "5",
+            "id": str(randint(0, 100000)),
             "name": "Test Addition",
             "authorized_devices": ["Test Sensor"],
             "authorized_users": ["test@test.com"],
