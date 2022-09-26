@@ -136,9 +136,12 @@ def register_device():
     request_data = request.json
     print(f"Registering a new device with request data: {request_data}")
 
+    if "id" not in request_data:
+        return jsonify({"error": "Device ID is required"}), 400
+
     devices.append(request_data)
 
-    return jsonify({"deviceID": randint(0, 100), "apiKey": "fake-api-key"})
+    return jsonify({"deviceID": request_data["id"], "apiKey": "fake-api-key"})
 
 
 @app.route("/policies", methods=["GET"])
